@@ -24,6 +24,7 @@ namespace Cinema_Admin
          */
         int active_table; // 0 - 9
         int insert_or_update; //0 - insert, 1 - update
+        int how_many_columns;
         DataGridViewSelectedRowCollection row_to_edit;
         List<Label> labels = new List<Label>();
         List<TextBox> textboxes = new List<TextBox>();
@@ -238,7 +239,7 @@ namespace Cinema_Admin
             if (names_of_columns == null) { MessageBox.Show("Error!" + " names_of_columns is null!"); }
             else
             {
-                int how_many_columns = names_of_columns.Length - number_of_foreign_keys;
+                how_many_columns = names_of_columns.Length - number_of_foreign_keys;
 
                 Label label = null;
                 TextBox textbox = null;              
@@ -287,11 +288,136 @@ namespace Cinema_Admin
 
         private void OK_button_Click(object sender, EventArgs e)
         {
-            if(textboxes[0].Text=="")
+            for (int i = 0; i < how_many_columns; i++)
             {
-                MessageBox.Show("EMPTY");
+                if ((active_table == 1 && (i == 0 || i == 1 || i == 3))
+                  || (active_table == 2 && (i == 1 || i == 2))
+                  || (active_table == 3)
+                  || (active_table == 4 && (i == 0))
+                  || (active_table == 5 && (i > 0 && i < 6))
+                  || (active_table == 6 && i > 0)
+                  || (active_table == 9 && (i < 6)))
+                {
+                    if (textboxes[i].Text == "")
+                    {
+                        MessageBox.Show("Przynajmniej jedno z wymaganych pól w tabeli " + this.Text + " jest puste!");
+                        return;
+                    }
+                }
             }
-            
+
+            if (insert_or_update==0)
+            {
+                if (active_table == 1)
+                {
+                    var newRow = new MOVIES();
+                    newRow.ID_MOVIE = textboxes[0].Text;
+                    newRow.TITLE = textboxes[1].Text;
+                    newRow.GENRE = textboxes[2].Text;
+                    newRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                    newRow.RATING = byte.Parse(comboboxes[0].Text);
+                    if (textboxes[5].Text != "")
+                    {
+                        newRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
+                    }
+                    newRow.DIRECTION = textboxes[6].Text;
+                    newRow.SCREENPLAY = textboxes[7].Text;
+                    newRow.STARRING = textboxes[8].Text;
+                    newRow.IMAGE = textboxes[9].Text;
+                    newRow.TRAILER = textboxes[10].Text;
+                    newRow.SYNOPSIS = textboxes[11].Text;
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.MOVIES.Add(newRow);
+                        C_Entities.SaveChanges();
+                    }
+
+                }
+                else if (active_table == 2)
+                {
+
+                }
+                else if (active_table == 3)
+                {
+
+                }
+                else if (active_table == 4)
+                {
+
+                }
+                else if (active_table == 6)
+                {
+
+                }
+                else if (active_table == 9)
+                {
+
+                }
+            }
+            else if (insert_or_update == 1)
+            {
+                if (active_table == 1)
+                {
+                    MOVIES editRow;
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        string primary_key = textboxes[0].Text;
+                        editRow = C_Entities.MOVIES.Where(s => s.ID_MOVIE == primary_key).First();
+                    }
+
+                    if (editRow != null)
+                    {
+                        editRow.TITLE = textboxes[1].Text;
+                        editRow.GENRE = textboxes[2].Text;
+                        editRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                        editRow.RATING = byte.Parse(comboboxes[0].Text);
+                        if (textboxes[5].Text != "")
+                        {
+                            editRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
+                        }
+                        editRow.DIRECTION = textboxes[6].Text;
+                        editRow.SCREENPLAY = textboxes[7].Text;
+                        editRow.STARRING = textboxes[8].Text;
+                        editRow.IMAGE = textboxes[9].Text;
+                        editRow.TRAILER = textboxes[10].Text;
+                        editRow.SYNOPSIS = textboxes[11].Text;
+                    }
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.Entry(editRow).State = System.Data.Entity.EntityState.Modified;
+                        C_Entities.SaveChanges();
+                    }
+
+                }
+                else if (active_table == 3)
+                {
+
+                }
+                else if (active_table == 4)
+                {
+
+                }
+                else if (active_table == 5)
+                {
+
+                }
+                else if (active_table == 6)
+                {
+
+                }
+                else if (active_table == 8)
+                {
+
+                }
+                else if (active_table == 9)
+                {
+
+                }
+            }
+
+
         }
 
         private void Cancel_button_Click(object sender, EventArgs e)
