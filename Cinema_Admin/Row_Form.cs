@@ -45,7 +45,7 @@ namespace Cinema_Admin
                 case 2: case 8:
                     Init_Row_Form(3);
                     break;  
-                case 3: case 4:
+                case 4:
                     Init_Row_Form(2);
                     break;
                 case 9:
@@ -65,7 +65,6 @@ namespace Cinema_Admin
              */
             if ((active_table == 1 && (i == 0 || i == 1 || i == 3))
                 || (active_table == 2 && (i == 1 || i == 2))
-                || (active_table == 3)
                 || (active_table == 4 && (i == 0))
                 || (active_table == 5 && (i > 0 && i < 6))
                 || (active_table == 6 && i > 0)
@@ -100,7 +99,7 @@ namespace Cinema_Admin
             {
                 List<string> itemsList = new List<string>();
 
-                if (i == 1) //ID_HALLS
+                if (i == 1 || i==3) //ID_HALLS
                 {
                     foreach (var item in C_Entities.HALLS.ToList())
                     {
@@ -112,13 +111,6 @@ namespace Cinema_Admin
                     foreach (var item in C_Entities.TICKETS.ToList())
                     {
                         itemsList.Add(item.ID_TICKET.ToString());
-                    }
-                }
-                else if (i == 3) //ID_HALLS
-                {
-                    foreach (var item in C_Entities.HALLS.ToList())
-                    {
-                        itemsList.Add(item.ID_HALL);
                     }
                 }
                 else if (i==4) //ID_MOVIE
@@ -204,10 +196,6 @@ namespace Cinema_Admin
                     names_of_columns = typeof(PROGRAM).GetProperties().Select(ColumnHeader => ColumnHeader.Name).ToArray();
                     this.Text = "PROGRAMS";
                     break;
-                case 3:
-                    names_of_columns = typeof(HALLS).GetProperties().Select(ColumnHeader => ColumnHeader.Name).ToArray();
-                    this.Text = "HALLS";
-                    break;
                 case 4:
                     names_of_columns = typeof(SEATS).GetProperties().Select(ColumnHeader => ColumnHeader.Name).ToArray();
                     this.Text = "SEATS";
@@ -285,14 +273,12 @@ namespace Cinema_Admin
             }
          
         }
-
-        private void OK_button_Click(object sender, EventArgs e)
+        public bool check_necessary_data()
         {
             for (int i = 0; i < how_many_columns; i++)
             {
                 if ((active_table == 1 && (i == 0 || i == 1 || i == 3))
                   || (active_table == 2 && (i == 1 || i == 2))
-                  || (active_table == 3)
                   || (active_table == 4 && (i == 0))
                   || (active_table == 5 && (i > 0 && i < 6))
                   || (active_table == 6 && i > 0)
@@ -301,14 +287,22 @@ namespace Cinema_Admin
                     if (textboxes[i].Text == "")
                     {
                         MessageBox.Show("Przynajmniej jedno z wymaganych pól w tabeli " + this.Text + " jest puste!");
-                        return;
+                        return false;
                     }
                 }
             }
-
-            if (insert_or_update==0)
+            return true;
+        }
+        private void OK_button_Click(object sender, EventArgs e)
+        {
+            if(check_necessary_data()==false) //sprawdzenie, czy administrator wypelnil wszystkie wymagane textBoxy edycja/dodanie
             {
-                if (active_table == 1)
+                return; //jesli, ktores z pol jest niewypelnione wyjdz z procedury obslugi przycisku 'OK'
+            }
+
+            if (insert_or_update==0) //wybrana opcja dodania krotki do bazy danych
+            {
+                if (active_table == 1) //MOVIES
                 {
                     var newRow = new MOVIES();
                     newRow.ID_MOVIE = textboxes[0].Text;
@@ -334,30 +328,68 @@ namespace Cinema_Admin
                     }
 
                 }
-                else if (active_table == 2)
+                else if (active_table == 2) //PROGRAM
                 {
+                    var newRow = new PROGRAM();
+                    newRow.DATE = DateTime.Parse(textboxes[1].Text);
+                    newRow.TIME = TimeSpan.Parse(textboxes[2].Text);
+                    newRow.ID_HALL = comboboxes[0].Text;
+                    newRow.ID_MOVIE = comboboxes[1].Text;
+                    newRow.C2D_3D = comboboxes[2].Text;
+                    newRow.VERSION = comboboxes[3].Text;
 
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.PROGRAM.Add(newRow);
+                        C_Entities.SaveChanges();
+                    }
                 }
-                else if (active_table == 3)
+                else if (active_table == 4) //SEATS
                 {
+                    var newRow = new SEATS();
+                    newRow.ID_SEAT = textboxes[0].Text;
+                    newRow.ID_HALL = comboboxes[0].Text;
+                    newRow.VIP = bool.Parse(textboxes[2].Text);
 
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.SEATS.Add(newRow);
+                        C_Entities.SaveChanges();
+                    }
                 }
-                else if (active_table == 4)
+                else if (active_table == 6) //TICKETS
                 {
+                    var newRow = new TICKETS();
+                    newRow.TYPE = textboxes[1].Text;
+                    newRow.PRICE_2D = decimal.Parse(textboxes[2].Text);
+                    newRow.PRICE_3D = decimal.Parse(textboxes[3].Text);
 
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.TICKETS.Add(newRow);
+                        C_Entities.SaveChanges();
+                    }
                 }
-                else if (active_table == 6)
+                else if (active_table == 9) //ADMINS
                 {
+                    var newRow = new ADMINS();
+                    newRow.ADMIN_LOGIN = textboxes[0].Text;
+                    newRow.PASSWORD = textboxes[1].Text;
+                    newRow.NAME = textboxes[2].Text;
+                    newRow.SURNAME = textboxes[3].Text;
+                    newRow.E_MAIL = textboxes[4].Text;
+                    newRow.TELEPHONE = textboxes[5].Text;
 
-                }
-                else if (active_table == 9)
-                {
-
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.ADMINS.Add(newRow);
+                        C_Entities.SaveChanges();
+                    }
                 }
             }
-            else if (insert_or_update == 1)
+            else if (insert_or_update == 1) //wybrana opcja edycji krotki w bazie danych
             {
-                if (active_table == 1)
+                if (active_table == 1) //MOVIES
                 {
                     MOVIES editRow;
                     using (var C_Entities = new CinemaEntities())
@@ -391,33 +423,186 @@ namespace Cinema_Admin
                     }
 
                 }
-                else if (active_table == 3)
+                if (active_table == 2) //PROGRAM
                 {
+                    PROGRAM editRow;
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        short primary_key = short.Parse(textboxes[0].Text);
+                        editRow = C_Entities.PROGRAM.Where(s => s.ID_PROGRAM == primary_key).First();
+                    }
+
+                    if (editRow != null)
+                    {
+                        editRow.DATE = DateTime.Parse(textboxes[1].Text);
+                        editRow.TIME = TimeSpan.Parse(textboxes[2].Text);
+                        editRow.ID_HALL = comboboxes[0].Text;
+                        editRow.ID_MOVIE = comboboxes[1].Text;
+                        editRow.C2D_3D = comboboxes[2].Text;
+                        editRow.VERSION = comboboxes[3].Text;
+                    }
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.Entry(editRow).State = System.Data.Entity.EntityState.Modified;
+                        C_Entities.SaveChanges();
+                    }
 
                 }
-                else if (active_table == 4)
+                else if (active_table == 4) //SEATS
                 {
+                    SEATS editRow;
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        string primary_key = textboxes[0].Text;
+                        editRow = C_Entities.SEATS.Where(s => s.ID_SEAT == primary_key).First();
+                    }
 
+                    if (editRow != null)
+                    {
+                        editRow.ID_HALL = comboboxes[0].Text;
+                        editRow.VIP = bool.Parse(textboxes[2].Text);
+                    }
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.Entry(editRow).State = System.Data.Entity.EntityState.Modified;
+                        C_Entities.SaveChanges();
+                    }
                 }
-                else if (active_table == 5)
+                else if (active_table == 5) //USERS
                 {
+                    USERS editRow;
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        string primary_key = textboxes[0].Text;
+                        editRow = C_Entities.USERS.Where(s => s.USER_LOGIN == primary_key).First();
+                    }
 
+                    if (editRow != null)
+                    {
+                       /* editRow.TITLE = textboxes[1].Text;
+                        editRow.GENRE = textboxes[2].Text;
+                        editRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                        editRow.RATING = byte.Parse(comboboxes[0].Text);
+                        if (textboxes[5].Text != "")
+                        {
+                            editRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
+                        }
+                        editRow.DIRECTION = textboxes[6].Text;
+                        editRow.SCREENPLAY = textboxes[7].Text;
+                        editRow.STARRING = textboxes[8].Text;
+                        editRow.IMAGE = textboxes[9].Text;
+                        editRow.TRAILER = textboxes[10].Text;
+                        editRow.SYNOPSIS = textboxes[11].Text;*/
+                    }
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.Entry(editRow).State = System.Data.Entity.EntityState.Modified;
+                        C_Entities.SaveChanges();
+                    }
                 }
-                else if (active_table == 6)
+                else if (active_table == 6) //TICKETS
                 {
+                    MOVIES editRow;
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        string primary_key = textboxes[0].Text;
+                        editRow = C_Entities.MOVIES.Where(s => s.ID_MOVIE == primary_key).First();
+                    }
 
+                    if (editRow != null)
+                    {
+                       /* editRow.TITLE = textboxes[1].Text;
+                        editRow.GENRE = textboxes[2].Text;
+                        editRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                        editRow.RATING = byte.Parse(comboboxes[0].Text);
+                        if (textboxes[5].Text != "")
+                        {
+                            editRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
+                        }
+                        editRow.DIRECTION = textboxes[6].Text;
+                        editRow.SCREENPLAY = textboxes[7].Text;
+                        editRow.STARRING = textboxes[8].Text;
+                        editRow.IMAGE = textboxes[9].Text;
+                        editRow.TRAILER = textboxes[10].Text;
+                        editRow.SYNOPSIS = textboxes[11].Text;*/
+                    }
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.Entry(editRow).State = System.Data.Entity.EntityState.Modified;
+                        C_Entities.SaveChanges();
+                    }
                 }
-                else if (active_table == 8)
+                else if (active_table == 8) //RES_DETAILS
                 {
+                    MOVIES editRow;
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        string primary_key = textboxes[0].Text;
+                        editRow = C_Entities.MOVIES.Where(s => s.ID_MOVIE == primary_key).First();
+                    }
 
+                    if (editRow != null)
+                    {
+                       /* editRow.TITLE = textboxes[1].Text;
+                        editRow.GENRE = textboxes[2].Text;
+                        editRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                        editRow.RATING = byte.Parse(comboboxes[0].Text);
+                        if (textboxes[5].Text != "")
+                        {
+                            editRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
+                        }
+                        editRow.DIRECTION = textboxes[6].Text;
+                        editRow.SCREENPLAY = textboxes[7].Text;
+                        editRow.STARRING = textboxes[8].Text;
+                        editRow.IMAGE = textboxes[9].Text;
+                        editRow.TRAILER = textboxes[10].Text;
+                        editRow.SYNOPSIS = textboxes[11].Text;*/
+                    }
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.Entry(editRow).State = System.Data.Entity.EntityState.Modified;
+                        C_Entities.SaveChanges();
+                    }
                 }
-                else if (active_table == 9)
+                else if (active_table == 9) //ADMINS
                 {
+                    MOVIES editRow;
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        string primary_key = textboxes[0].Text;
+                        editRow = C_Entities.MOVIES.Where(s => s.ID_MOVIE == primary_key).First();
+                    }
 
+                    if (editRow != null)
+                    {
+                     /*   editRow.TITLE = textboxes[1].Text;
+                        editRow.GENRE = textboxes[2].Text;
+                        editRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                        editRow.RATING = byte.Parse(comboboxes[0].Text);
+                        if (textboxes[5].Text != "")
+                        {
+                            editRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
+                        }
+                        editRow.DIRECTION = textboxes[6].Text;
+                        editRow.SCREENPLAY = textboxes[7].Text;
+                        editRow.STARRING = textboxes[8].Text;
+                        editRow.IMAGE = textboxes[9].Text;
+                        editRow.TRAILER = textboxes[10].Text;
+                        editRow.SYNOPSIS = textboxes[11].Text;*/
+                    }
+
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        C_Entities.Entry(editRow).State = System.Data.Entity.EntityState.Modified;
+                        C_Entities.SaveChanges();
+                    }
                 }
             }
-
-
         }
 
         private void Cancel_button_Click(object sender, EventArgs e)
@@ -434,7 +619,7 @@ namespace Cinema_Admin
                     // wylacz mozliwosc edycji
                     if (i == 0) //dla kazdej 0. kolumny tabel
                     {
-                        if (active_table != 2 || active_table != 5 || active_table!=9) //tabela users, ID_login
+                        if (active_table != 2 && active_table != 5 && active_table!=9) //tabela users, ID_login
                         {
                             textboxes[i].Enabled = false;
                         }

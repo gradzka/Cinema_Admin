@@ -173,7 +173,7 @@ namespace Cinema_Admin
                 b_inactive_colour();
                 this.b_halls.BackColor = System.Drawing.SystemColors.Highlight;
                 b_active = 3;
-                active_inactive_colour_operation_button(true, false, "SALE");
+                active_inactive_colour_operation_button(false, false, "SALE");
 
                 using (var C_Entities = new CinemaEntities())
                 {
