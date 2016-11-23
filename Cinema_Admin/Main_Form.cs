@@ -422,7 +422,11 @@ namespace Cinema_Admin
             else
             {
                 Row_Form row_form = new Row_Form(b_active, 0, null);
-                row_form.ShowDialog();
+                DialogResult dialog_result = row_form.ShowDialog();
+                if (dialog_result == DialogResult.OK) //Cancel -> x, anuluj
+                {
+                    TableGridView_fill(b_active);
+                }
 
             }
         }
@@ -446,7 +450,80 @@ namespace Cinema_Admin
 
         private void b_delete_tuple_Click(object sender, EventArgs e)
         {
-            //do dokonczenia
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            if (MessageBox.Show(this, "Czy na pewno chcesz usunąć tę krotkę z bazy?", "Uwaga", buttons) == DialogResult.Yes)
+            {
+                dynamic deleteRow = null;
+                using (var C_Entities = new CinemaEntities())
+                {
+                    if (b_active == 1)
+                    {
+                        string primary_key = TableGridView.SelectedRows[0].Cells[0].Value.ToString();//pobranie klucza glownego z krotki
+                        deleteRow = C_Entities.MOVIES.Where(movie => movie.ID_MOVIE == primary_key).First(); //deleterow -> cala krotka, gdzie klucz glowny, to primary_key
+                    }
+                    else if (b_active == 2)
+                    {
+                        short primary_key = short.Parse(TableGridView.SelectedRows[0].Cells[0].Value.ToString());
+                        deleteRow = C_Entities.PROGRAM.Where(program => program.ID_PROGRAM == primary_key).First();
+                    }
+                    else if (b_active == 3)
+                    {
+                        string primary_key = TableGridView.SelectedRows[0].Cells[0].Value.ToString();
+                        deleteRow = C_Entities.HALLS.Where(hall => hall.ID_HALL == primary_key).First();
+                    }
+                    else if (b_active == 4)
+                    {
+                        string primary_key = TableGridView.SelectedRows[0].Cells[0].Value.ToString();
+                        deleteRow = C_Entities.SEATS.Where(seats => seats.ID_SEAT == primary_key).First();
+                    }
+                    else if (b_active == 5)
+                    {
+                        string primary_key = TableGridView.SelectedRows[0].Cells[0].Value.ToString();
+                        deleteRow = C_Entities.USERS.Where(users => users.USER_LOGIN == primary_key).First();
+                    }
+                    else if (b_active == 6)
+                    {
+                        byte primary_key = byte.Parse(TableGridView.SelectedRows[0].Cells[0].Value.ToString());
+                        deleteRow = C_Entities.TICKETS.Where(ticket => ticket.ID_TICKET == primary_key).First();
+                    }
+                    else if (b_active == 7)
+                    {
+                        short primary_key = short.Parse(TableGridView.SelectedRows[0].Cells[0].Value.ToString());
+                        deleteRow = C_Entities.RESERVATIONS.Where(reservation => reservation.ID_RESERVATION == primary_key).First();
+                    }
+                    else if (b_active == 8)
+                    {
+                        short primary_key_1 = short.Parse(TableGridView.SelectedRows[0].Cells[0].Value.ToString());
+                        string primary_key_2 = TableGridView.SelectedRows[0].Cells[1].Value.ToString();
+
+                        deleteRow = C_Entities.RESERVATIONS_DETAILS.Where(
+                            res_details => res_details.ID_RESERVATION == primary_key_1
+                            && res_details.ID_SEAT == primary_key_2).First();
+                    }
+                    else if (b_active == 9)
+                    {
+                        string primary_key = TableGridView.SelectedRows[0].Cells[0].Value.ToString();
+                        deleteRow = C_Entities.ADMINS.Where(admin => admin.ADMIN_LOGIN == primary_key).First();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Wystąpił błąd podczas usuwania danych!", "Error#8");
+                    }
+
+                    C_Entities.Entry(deleteRow).State = System.Data.Entity.EntityState.Deleted;
+                    try
+                    {
+                        C_Entities.SaveChanges();
+                    }
+                    catch (DbUpdateConcurrencyException)
+                    {
+                        MessageBox.Show("Wystąpił błąd podczas dodawania danych!", "Error#9");
+                        return;
+                    }
+                    MessageBox.Show("Poprawnie usunięto dane!", "Usuwanie danych");
+                    TableGridView_fill(b_active);
+                }
+            }
         }      
 
         private void b_logout_Click(object sender, EventArgs e)
