@@ -8,8 +8,6 @@ namespace Cinema_Admin
 {
     static class Program_Main
     {
-        static public bool form_change = false;
-        static public bool close = false;
         static public string login = "";
         static public string password = "";
         /// <summary>
@@ -20,18 +18,22 @@ namespace Cinema_Admin
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
-            while (close==false)
+            Login_Form login_form = new Login_Form();
+            Main_Form main_form = new Main_Form();
+            DialogResult dialog_result = DialogResult.No;
+
+            while (dialog_result!= DialogResult.Cancel)
             {
-                close = true;
-                if (form_change == false)
+                if (dialog_result == DialogResult.No) //jezeli jest niezalogowany
                 {
-                    Application.Run(new Login_Form());
+                    login_form = new Login_Form();
+                    dialog_result = login_form.ShowDialog();
                 }
-                
-                if (form_change == true)
+
+                if (dialog_result == DialogResult.Yes)
                 {
-                    Application.Run(new Main_Form());
+                    main_form = new Main_Form();
+                    dialog_result = main_form.ShowDialog();
                 }
 
                 using (var container = new CinemaEntities())

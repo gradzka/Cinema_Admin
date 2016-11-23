@@ -36,7 +36,8 @@ namespace Cinema_Admin
         {
             if (check_login_check_password())
             {
-                Cinema_Admin.Program_Main.form_change = true;
+                //Cinema_Admin.Program_Main.form_change = true;
+                this.DialogResult = DialogResult.Yes;
                 this.Close();
             }
             else
@@ -49,7 +50,8 @@ namespace Cinema_Admin
             {
                 if (check_login_check_password())
                 {
-                    Cinema_Admin.Program_Main.form_change = true;
+                    //Cinema_Admin.Program_Main.form_change = true;
+                    this.DialogResult = DialogResult.Yes;
                     this.Close();
                 }
                 else

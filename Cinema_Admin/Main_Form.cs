@@ -32,6 +32,7 @@ namespace Cinema_Admin
          * 8 - b_res_details
          */
         int b_active = 1; //highlighted button (1 - 9) - nr buttona, domyslnie button nr 1
+
         void b_inactive_colour() //kolor szary - button nieaktywny, kolor niebieski - aktywny
         {
             switch (b_active)
@@ -105,6 +106,170 @@ namespace Cinema_Admin
                     b_add_tuple.BackColor = System.Drawing.SystemColors.Highlight;
             }
         }
+        public void TableGridView_fill(int b_active)
+        {
+            switch (b_active)
+            {
+                case 1:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var movies = from movie in C_Entities.MOVIES
+                                         select new
+                                         {
+                                             movie.ID_MOVIE,
+                                             movie.TITLE,
+                                             movie.GENRE,
+                                             movie.RUNTIME,
+                                             movie.RATING,
+                                             movie.RELEASE_DATE,
+                                             movie.DIRECTION,
+                                             movie.SCREENPLAY,
+                                             movie.STARRING,
+                                             movie.IMAGE,
+                                             movie.TRAILER,
+                                             movie.SYNOPSIS
+                                         };
+                            TableGridView.DataSource = movies.ToList();
+                        }
+                    }
+                    break;
+                case 2:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var program = from prog in C_Entities.PROGRAM
+                                          select new
+                                          {
+                                              prog.ID_PROGRAM,
+                                              prog.DATE,
+                                              prog.TIME,
+                                              prog.ID_HALL,
+                                              prog.ID_MOVIE,
+                                              prog.C2D_3D,
+                                              prog.VERSION
+                                          };
+                            TableGridView.DataSource = program.ToList();
+                        }
+                    }
+                    break;
+                case 3:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var halls = from hall in C_Entities.HALLS
+                                        select new
+                                        {
+                                            hall.ID_HALL,
+                                            hall.SEATS
+                                        };
+                            TableGridView.DataSource = halls.ToList();
+                        }
+                    }
+                    break;
+                case 4:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var seats = from seat in C_Entities.SEATS
+                                        select new
+                                        {
+                                            seat.ID_SEAT,
+                                            seat.ID_HALL,
+                                            seat.VIP
+                                        };
+                            TableGridView.DataSource = seats.ToList();
+                        }
+                    }
+                    break;
+                case 5:
+                    using (var C_Entities = new CinemaEntities())
+                    {
+                        var users = from user in C_Entities.USERS
+                                    select new
+                                    {
+                                        user.USER_LOGIN,
+                                        user.PASSWORD,
+                                        user.NAME,
+                                        user.SURNAME,
+                                        user.E_MAIL,
+                                        user.TELEPHONE,
+                                        user.LAST_LOGIN
+                                    };
+                        TableGridView.DataSource = users.ToList();
+                    }
+                    break;
+                case 6:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var tickets = from ticket in C_Entities.TICKETS
+                                          select new
+                                          {
+                                              ticket.ID_TICKET,
+                                              ticket.TYPE,
+                                              ticket.PRICE_2D,
+                                              ticket.PRICE_3D
+                                          };
+                            TableGridView.DataSource = tickets.ToList();
+                        }
+                    }
+                    break;
+                case 7:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var reservations = from reservation in C_Entities.RESERVATIONS
+                                               select new
+                                               {
+                                                   reservation.ID_RESERVATION,
+                                                   reservation.ID_PROGRAM,
+                                                   reservation.USER_LOGIN
+                                               };
+                            TableGridView.DataSource = reservations.ToList();
+                        }
+                    }
+                    break;
+                case 8:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var details = from detail in C_Entities.RESERVATIONS_DETAILS
+                                          select new
+                                          {
+                                              detail.ID_RESERVATION,
+                                              detail.ID_SEAT,
+                                              detail.ID_TICKET,
+                                          };
+                            TableGridView.DataSource = details.ToList();
+                        }
+                    }
+                    break;
+                case 9:
+                    {
+                        using (var C_Entities = new CinemaEntities())
+                        {
+                            var admins = from admin in C_Entities.ADMINS
+                                         select new
+                                         {
+                                             admin.ADMIN_LOGIN,
+                                             admin.PASSWORD,
+                                             admin.NAME,
+                                             admin.SURNAME,
+                                             admin.E_MAIL,
+                                             admin.TELEPHONE,
+                                             admin.LAST_LOGIN,
+                                             admin.LAST_LOGOUT
+                                         };
+                            TableGridView.DataSource = admins.ToList();
+                        }
+                    }
+                    break;
+                default:
+                    { MessageBox.Show("Żądanie wypełnienia TableGridView danymi z nieistniającej tabeli!"); }
+                    break;
+            }
+        }
         private void b_movies_Click(object sender, EventArgs e)
         {
             if (b_active != 1)
@@ -114,26 +279,7 @@ namespace Cinema_Admin
                 b_active = 1;
                 active_inactive_colour_operation_button(true, true, "FILMY");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var movies = from movie in C_Entities.MOVIES
-                                 select new
-                                 {
-                                     movie.ID_MOVIE,
-                                     movie.TITLE,
-                                     movie.GENRE,
-                                     movie.RUNTIME,
-                                     movie.RATING,
-                                     movie.RELEASE_DATE,
-                                     movie.DIRECTION,
-                                     movie.SCREENPLAY,
-                                     movie.STARRING,
-                                     movie.IMAGE,
-                                     movie.TRAILER,
-                                     movie.SYNOPSIS
-                                 };
-                    TableGridView.DataSource = movies.ToList();
-                }
+                TableGridView_fill(b_active);
 
             }   
 
@@ -148,21 +294,7 @@ namespace Cinema_Admin
                 b_active = 2;
                 active_inactive_colour_operation_button(true, true, "PROGRAM");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var program = from prog in C_Entities.PROGRAM
-                                 select new
-                                 {
-                                     prog.ID_PROGRAM,
-                                     prog.DATE,
-                                     prog.TIME,
-                                     prog.ID_HALL,
-                                     prog.ID_MOVIE,
-                                     prog.C2D_3D,
-                                     prog.VERSION
-                                 };
-                    TableGridView.DataSource = program.ToList();
-                }
+                TableGridView_fill(b_active);
             }        
         }
 
@@ -175,16 +307,7 @@ namespace Cinema_Admin
                 b_active = 3;
                 active_inactive_colour_operation_button(false, false, "SALE");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var halls = from hall in C_Entities.HALLS
-                                  select new
-                                  {
-                                      hall.ID_HALL,
-                                      hall.SEATS
-                                  };
-                    TableGridView.DataSource = halls.ToList();
-                }
+                TableGridView_fill(b_active);
             }
         }
 
@@ -197,17 +320,7 @@ namespace Cinema_Admin
                 b_active = 4;
                 active_inactive_colour_operation_button(true, true, "MIEJSCA");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var seats = from seat in C_Entities.SEATS
-                                select new
-                                {
-                                    seat.ID_SEAT,
-                                    seat.ID_HALL,
-                                    seat.VIP
-                                };
-                    TableGridView.DataSource = seats.ToList();
-                }
+                TableGridView_fill(b_active);
             }
         }
 
@@ -220,21 +333,7 @@ namespace Cinema_Admin
                 b_active = 5;
                 active_inactive_colour_operation_button(false, true, "UŻYTKOWNICY");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var users = from user in C_Entities.USERS
-                                select new
-                                {
-                                    user.USER_LOGIN,
-                                    user.PASSWORD,
-                                    user.NAME,
-                                    user.SURNAME,
-                                    user.E_MAIL,
-                                    user.TELEPHONE,
-                                    user.LAST_LOGIN
-                                };
-                    TableGridView.DataSource = users.ToList();
-                }
+                TableGridView_fill(b_active);
             }
         }
 
@@ -247,18 +346,7 @@ namespace Cinema_Admin
                 b_active = 6;
                 active_inactive_colour_operation_button(true, true, "BILETY");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var tickets = from ticket in C_Entities.TICKETS
-                                select new
-                                {
-                                    ticket.ID_TICKET,
-                                    ticket.TYPE,
-                                    ticket.PRICE_2D,
-                                    ticket.PRICE_3D
-                                };
-                    TableGridView.DataSource = tickets.ToList();
-                }
+                TableGridView_fill(b_active);
             }
         }
 
@@ -271,17 +359,7 @@ namespace Cinema_Admin
                 b_active = 7;
                 active_inactive_colour_operation_button(false, false, "REZERWACJE");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var reservations = from reservation in C_Entities.RESERVATIONS
-                                  select new
-                                  {
-                                      reservation.ID_RESERVATION,
-                                      reservation.ID_PROGRAM,
-                                      reservation.USER_LOGIN
-                                  };
-                    TableGridView.DataSource = reservations.ToList();
-                }
+                TableGridView_fill(b_active);
             }
         }
 
@@ -294,19 +372,22 @@ namespace Cinema_Admin
                 b_active = 8;
                 active_inactive_colour_operation_button(false, true, "SZCZEGÓŁY REZERWACJI");
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var details = from detail in C_Entities.RESERVATIONS_DETAILS
-                                  select new
-                                  {
-                                      detail.ID_RESERVATION,
-                                      detail.ID_SEAT,
-                                      detail.ID_TICKET,
-                                  };
-                    TableGridView.DataSource = details.ToList();
-                }
+                TableGridView_fill(b_active);
             }
         }
+        private void b_admin_Click(object sender, EventArgs e)
+        {
+            if (b_active != 9)
+            {
+                b_inactive_colour();
+                this.b_admin.BackColor = System.Drawing.SystemColors.Highlight;
+                b_active = 9;
+                active_inactive_colour_operation_button(true, true, "ADMINISTRATORZY");
+
+                TableGridView_fill(b_active);
+            }
+        }
+
         private void Main_Form_Load(object sender, EventArgs e)
         {
             using (var C_Entities = new CinemaEntities())
@@ -330,33 +411,8 @@ namespace Cinema_Admin
                 TableGridView.DataSource = movies.ToList();
             }
         }
-        private void b_admin_Click(object sender, EventArgs e)
-        {
-            if (b_active != 9)
-            {
-                b_inactive_colour();
-                this.b_admin.BackColor = System.Drawing.SystemColors.Highlight;
-                b_active = 9;
-                active_inactive_colour_operation_button(true, true, "ADMINISTRATORZY");
+       
 
-                using (var C_Entities = new CinemaEntities())
-                {
-                    var admins = from admin in C_Entities.ADMINS
-                                 select new
-                                 {
-                                     admin.ADMIN_LOGIN,
-                                     admin.PASSWORD,
-                                     admin.NAME,
-                                     admin.SURNAME,
-                                     admin.E_MAIL,
-                                     admin.TELEPHONE,
-                                     admin.LAST_LOGIN,
-                                     admin.LAST_LOGOUT
-                                 };
-                    TableGridView.DataSource = admins.ToList();
-                }
-            }
-        }
         private void b_add_tuple_Click(object sender, EventArgs e)
         {
             if (b_active > 9 || b_active < 1)
@@ -366,7 +422,8 @@ namespace Cinema_Admin
             else
             {
                 Row_Form row_form = new Row_Form(b_active, 0, null);
-                row_form.Show();
+                row_form.ShowDialog();
+
             }
         }
 
@@ -378,8 +435,12 @@ namespace Cinema_Admin
             }
             else
             {
-                Row_Form row_form = new Row_Form(b_active, 1, TableGridView.SelectedRows);
-                row_form.Show();
+                Row_Form row_form = new Row_Form(b_active, 1, TableGridView.SelectedRows[0].Cells); //tabela, 1 - kliknieto EDYTUJ, wybrana krotka do edycji
+                DialogResult dialog_result = row_form.ShowDialog();
+                if (dialog_result == DialogResult.OK) //Cancel -> x, anuluj
+                {
+                    TableGridView_fill(b_active);
+                }
             }
         }
 
@@ -390,8 +451,7 @@ namespace Cinema_Admin
 
         private void b_logout_Click(object sender, EventArgs e)
         {
-            Cinema_Admin.Program_Main.form_change = false;
-            Cinema_Admin.Program_Main.close = false;
+            this.DialogResult = DialogResult.No;
             this.Close();
         }   
     }

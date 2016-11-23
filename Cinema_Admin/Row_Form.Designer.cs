@@ -69,7 +69,9 @@
             this.ClientSize = new System.Drawing.Size(284, 363);
             this.Controls.Add(this.OK_button);
             this.Controls.Add(this.Cancel_button);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Row_Form";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Row_Form";
