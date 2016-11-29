@@ -30,6 +30,7 @@ namespace Cinema_Admin
         List<Label> labels = new List<Label>();
         List<TextBox> textboxes = new List<TextBox>();
         List<ComboBox> comboboxes = new List<ComboBox>();
+        List<DateTimePicker> datetimepickers = new List<DateTimePicker>();
         CheckBox checkbox = null;
 
         public Row_Form(int table, int option, DataGridViewCellCollection row)
@@ -139,7 +140,7 @@ namespace Cinema_Admin
                     }
 
                     //Combobox replace TexBox
-                    create_comboboxes(textbox, i);
+                    create_comboboxes_date_time_pickers(textbox, i);
 
                     textbox.Size = new System.Drawing.Size(120, 20);
                     textbox.TabIndex = i + 12;
@@ -154,15 +155,19 @@ namespace Cinema_Admin
             }
 
         }
-        public void create_comboboxes(TextBox textbox, int i)
+        public void create_comboboxes_date_time_pickers(TextBox textbox, int i)
         {
-            if (active_table == 1 && i == 4) //DODAJ
+            if (active_table == 1) //DODAJ
             {
-                create_combobox_range(textbox, i, new string[] { "0", "7", "12", "15", "18" }, "0");
+                if (i == 4) { create_combobox_range(textbox, i, new string[] { "0", "7", "12", "15", "18" }, "0"); }
+                if (i == 3) { create_DateTimePicker(textbox, i, "HH:mm"); }
+                if (i == 5) { create_DateTimePicker(textbox, i, "dd/MM/yyyy"); }
             }
 
             if (active_table == 2) //PROGRAM
             {
+                if (i==1) { create_DateTimePicker(textbox, i, "dd/MM/yyyy"); }
+                if (i == 2) { create_DateTimePicker(textbox, i, "HH:mm"); }
                 if (i == 3) //ID_HALLS
                 {
                     create_combobox_entieties(textbox, i);
@@ -219,6 +224,28 @@ namespace Cinema_Admin
             comboboxes.Add(combobox);
             this.Controls.Add(combobox);
         }
+        public void create_DateTimePicker(TextBox textbox, int i, string format)
+        {
+            textbox.Visible = false;
+            DateTimePicker datetimepicker = new DateTimePicker();
+            datetimepicker.Format = DateTimePickerFormat.Custom;
+            datetimepicker.CustomFormat = format;
+            if (format=="HH:mm")
+            {
+                datetimepicker.ShowUpDown = true;
+                datetimepicker.Value = DateTime.Parse("2016-11-29 00:00");
+            }
+            else if (active_table==2)
+            {
+                datetimepicker.MinDate = DateTime.Now;
+            }
+            datetimepicker.Size = new System.Drawing.Size(120, 20);
+            datetimepicker.TabIndex = i + 12;
+            datetimepicker.Location= new System.Drawing.Point(141, 17 + 25 * i);
+            datetimepickers.Add(datetimepicker);
+            this.Controls.Add(datetimepicker);
+        }
+
         public void create_combobox_entieties(TextBox textbox, int i)
         {
             textbox.Visible = false;
@@ -263,12 +290,11 @@ namespace Cinema_Admin
             /* active table wskazuje na tabele
              * i wskazuje na i-ta kolumne
              */
-            if ((active_table == 1 && (i == 0 || i == 1 || i == 3))
-                || (active_table == 2 && (i == 1 || i == 2))
+            if ((active_table == 1 && (i == 0 || i == 1))
                 || (active_table == 4 && (i == 0))
                 || (active_table == 5 && (i>0 && i < 6))
                 || (active_table == 6 && i > 0)
-                || (active_table == 9 && (i>0 && i < 6)))
+                || (active_table == 9 && (i < 6)))
             {
                 label.ForeColor = System.Drawing.Color.Salmon;
             }
@@ -291,27 +317,44 @@ namespace Cinema_Admin
                             textboxes[i].Enabled = false;
                         }
                     }
-                    if (active_table == 5 && i == 6)
+                    if (active_table == 5 && i == 6) //USERS -> LAST_LOGIN
                     {
                         textboxes[i].Enabled = false;
                     }
-                    if (active_table == 8 && i == 1) //dla tabeli res_details i 1. kolumny
+                    if (active_table == 8 && i == 1) //dla tabeli res_details i 1. kolumny //RES_DETAILS - > ID_RESERBATION
                     {
                         textboxes[i].Enabled = false;
                     }
 
                     if (row_to_edit[i].Value != null)
                     {
-                        //Combobox - EDYTUJ
-                        if (active_table == 1 && i == 4) //MOVIE -> RATING
+                        //Combobox - EDYTUJ                    
+                        if (active_table == 1 && i == 3) //MOVIE -> GENRE
+                        {
+                            datetimepickers[0].Text = row_to_edit[i].Value.ToString();
+                        }
+                        else if (active_table == 1 && i == 4) //MOVIE -> RUNTIME
+                        {
+                            comboboxes[0].Text = row_to_edit[i].Value.ToString();  //---> sprawdzic, czy nie ma w bazie 
+                        }
+                        else if (active_table == 1 && i == 5) //MOVIE -> RATING
+                        { 
+                            datetimepickers[1].Value = DateTime.Parse(row_to_edit[i].Value.ToString());
+                        }
+
+                        else if (active_table == 2 && i == 1) //PROGRAM -> ID_PROGRAM
+                        {
+                            datetimepickers[0].Value = DateTime.Parse(row_to_edit[i].Value.ToString());
+                        }
+                        else if (active_table == 2 && i == 2) //PROGRAM -> DATE
+                        {
+                            datetimepickers[1].Text = row_to_edit[i].Value.ToString();
+                        }
+                        else if (active_table == 2 && i == 3) //PROGRAM -> TIME
                         {
                             comboboxes[0].Text = row_to_edit[i].Value.ToString();
                         }
-                        else if (active_table == 2 && i == 3) //PROGRAM -> VERSION
-                        {
-                            comboboxes[0].Text = row_to_edit[i].Value.ToString();
-                        }
-                        else if (active_table == 2 && i == 4) //PROGRAM -> VERSION
+                        else if (active_table == 2 && i == 4) //PROGRAM -> ID_HALL
                         {
                             comboboxes[1].Text = row_to_edit[i].Value.ToString();
                         }
@@ -348,8 +391,7 @@ namespace Cinema_Admin
         {
             for (int i = 0; i < how_many_columns; i++)
             {
-                if ((active_table == 1 && (i == 0 || i == 1 || i == 3))
-                  || (active_table == 2 && (i == 1 || i == 2))
+                if ((active_table == 1 && (i == 0 || i == 1))
                   || (active_table == 4 && (i == 0))
                   || (active_table == 5 && (i > 0 && i < 6))
                   || (active_table == 6 && i > 0)
@@ -374,12 +416,9 @@ namespace Cinema_Admin
                     newRow.ID_MOVIE = textboxes[0].Text;
                     newRow.TITLE = textboxes[1].Text;
                     newRow.GENRE = textboxes[2].Text;
-                    newRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                    newRow.RUNTIME = TimeSpan.Parse(datetimepickers[0].Text);
                     newRow.RATING = byte.Parse(comboboxes[0].Text);
-                    if (textboxes[5].Text != "")
-                    {
-                        newRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
-                    }
+                    newRow.RELEASE_DATE = datetimepickers[1].Value;
                     newRow.DIRECTION = textboxes[6].Text;
                     newRow.SCREENPLAY = textboxes[7].Text;
                     newRow.STARRING = textboxes[8].Text;
@@ -392,8 +431,8 @@ namespace Cinema_Admin
                 else if (active_table == 2) //PROGRAM
                 {
                     var newRow = new PROGRAM();
-                    newRow.DATE = DateTime.Parse(textboxes[1].Text);
-                    newRow.TIME = TimeSpan.Parse(textboxes[2].Text);
+                    newRow.DATE = datetimepickers[0].Value;
+                    newRow.TIME = TimeSpan.Parse(datetimepickers[1].Text);
                     newRow.ID_HALL = comboboxes[0].Text;
                     newRow.ID_MOVIE = comboboxes[1].Text;
                     newRow.C2D_3D = comboboxes[2].Text;
@@ -465,12 +504,9 @@ namespace Cinema_Admin
                 {
                     editRow.TITLE = textboxes[1].Text;
                     editRow.GENRE = textboxes[2].Text;
-                    editRow.RUNTIME = TimeSpan.Parse(textboxes[3].Text);
+                    editRow.RUNTIME = TimeSpan.Parse(datetimepickers[0].Text);
                     editRow.RATING = byte.Parse(comboboxes[0].Text);
-                    if (textboxes[5].Text != "") //mozliwosc null, jezeli nieuzupelniona, pomin
-                    {
-                        editRow.RELEASE_DATE = DateTime.Parse(textboxes[5].Text);
-                    }
+                    editRow.RELEASE_DATE = datetimepickers[1].Value;
                     editRow.DIRECTION = textboxes[6].Text;
                     editRow.SCREENPLAY = textboxes[7].Text;
                     editRow.STARRING = textboxes[8].Text;
@@ -490,8 +526,8 @@ namespace Cinema_Admin
 
                 if (editRow != null)
                 {
-                    editRow.DATE = DateTime.Parse(textboxes[1].Text);
-                    editRow.TIME = TimeSpan.Parse(textboxes[2].Text);
+                    editRow.DATE = datetimepickers[0].Value;
+                    editRow.TIME = TimeSpan.Parse(datetimepickers[1].Text);
                     editRow.ID_HALL = comboboxes[0].Text;
                     editRow.ID_MOVIE = comboboxes[1].Text;
                     editRow.C2D_3D = comboboxes[2].Text;
