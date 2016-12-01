@@ -26,6 +26,7 @@ namespace Cinema_Admin
         int active_table; // 0 - 9
         int insert_or_update; //0 - insert, 1 - update
         int how_many_columns;
+
         DataGridViewCellCollection row_to_edit; //dane w krotce z bazy danych, tabela pol w krotce
         List<Label> labels = new List<Label>();
         List<TextBox> textboxes = new List<TextBox>();
@@ -237,7 +238,8 @@ namespace Cinema_Admin
             }
             else if (active_table==2)
             {
-                datetimepicker.MinDate = DateTime.Now;
+                datetimepicker.Value = DateTime.Now.Date;
+                datetimepicker.MinDate = DateTime.Now.Date;
             }
             datetimepicker.Size = new System.Drawing.Size(120, 20);
             datetimepicker.TabIndex = i + 12;
@@ -406,6 +408,64 @@ namespace Cinema_Admin
             }
             return true;
         }
+        bool check_if_date_available()
+        {
+            TimeSpan time_to_prepare_hall = new TimeSpan(0, 10, 0);
+            TimeSpan twenty_four_hours = new TimeSpan(24, 0, 0);
+
+            DateTime DATE = datetimepickers[0].Value;
+            DateTime DATE_next = DATE.AddDays(1);
+            DateTime DATE_prev = DATE.AddDays(-1);
+
+            TimeSpan TIME = TimeSpan.Parse(datetimepickers[1].Text);
+            string ID_HALL = comboboxes[0].Text;
+            string MOVIE = comboboxes[1].Text;
+
+            using (var C_Entities = new CinemaEntities())
+            {
+                TimeSpan runtime = C_Entities.MOVIES.Where(movie => movie.ID_MOVIE == MOVIE).First().RUNTIME; //czas trwania dodawanego filmu
+
+                var program = (from pr in C_Entities.PROGRAM
+                              join movie in C_Entities.MOVIES on pr.ID_MOVIE equals movie.ID_MOVIE
+                select new
+                 {
+                    DATE = pr.DATE,
+                    TIME = pr.TIME,
+                    ID_HALL = pr.ID_HALL,
+                    RUNTIME=movie.RUNTIME
+                 }).ToList();
+
+                foreach (var item in program)
+                {
+                    if(item.ID_HALL.Equals(ID_HALL))
+                    {
+                        if (item.DATE.Equals(DATE))
+                        {
+                            if (TIME<= item.TIME +(item.RUNTIME+ time_to_prepare_hall) && item.TIME <= TIME + (runtime+ time_to_prepare_hall))
+                            {
+                                return false;
+                            }
+                        }
+                        else if (item.DATE.Equals(DATE_next))
+                        {
+                            if (TIME- twenty_four_hours <= item.TIME + (item.RUNTIME + time_to_prepare_hall) && item.TIME <= TIME + (runtime + time_to_prepare_hall)-twenty_four_hours)
+                            {
+                                return false;
+                            }
+                        }
+                        else if (item.DATE.Equals(DATE_prev))
+                        {
+                            if (TIME+ twenty_four_hours <= item.TIME + (item.RUNTIME + time_to_prepare_hall) && item.TIME <= TIME + (runtime + time_to_prepare_hall)+ twenty_four_hours)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
         public bool insert_row()
         {
             using (var C_Entities = new CinemaEntities())
@@ -437,7 +497,13 @@ namespace Cinema_Admin
                     newRow.ID_MOVIE = comboboxes[1].Text;
                     newRow.C2D_3D = comboboxes[2].Text;
                     newRow.VERSION = comboboxes[3].Text;
-                    
+
+                    if(check_if_date_available()==false)
+                    {
+                        MessageBox.Show("Podany termin jest zajęty!", "Error#10");
+                        return false;
+                    }
+
                     C_Entities.PROGRAM.Add(newRow);
                 }
                 else if (active_table == 4) //SEATS
@@ -532,6 +598,12 @@ namespace Cinema_Admin
                     editRow.ID_MOVIE = comboboxes[1].Text;
                     editRow.C2D_3D = comboboxes[2].Text;
                     editRow.VERSION = comboboxes[3].Text;
+
+                    if (check_if_date_available() == false)
+                    {
+                        MessageBox.Show("Podany termin jest zajęty!", "Error#10");
+                        return false;
+                    }
                 }
             }
             else if (active_table == 4) //SEATS
