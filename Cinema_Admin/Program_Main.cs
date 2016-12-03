@@ -39,8 +39,11 @@ namespace Cinema_Admin
                 using (var container = new CinemaEntities())
                 {
                     var number_of_admins = container.ADMINS.Where(a => a.ADMIN_LOGIN == login && a.PASSWORD == password);
-                    number_of_admins.First().LAST_LOGOUT = DateTime.Now;
-                    container.SaveChanges();
+                    if (number_of_admins.Equals(null))
+                    {
+                        number_of_admins.First().LAST_LOGOUT = DateTime.Now;
+                        container.SaveChanges();
+                    }
                 }
             }
         }

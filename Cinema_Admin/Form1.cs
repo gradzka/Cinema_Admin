@@ -22,7 +22,7 @@ namespace Cinema_Admin
         {
             using (var container = new CinemaEntities())
             {
-                byte[] admin_password = Encoding.Default.GetBytes(login_textBox.Text); //pobrana wartosc z pola login_textBox w byte
+                byte[] admin_password = Encoding.Default.GetBytes(password_textBox.Text); //pobrana wartosc z pola login_textBox w byte
 
                 //utworzenie skrotu od pobranego hasla (SHA_1)
                 using (var sha1 = SHA1.Create())
