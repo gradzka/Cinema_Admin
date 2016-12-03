@@ -57,6 +57,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Add_Password_Form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Add_Password_Form.Designer.cs">
+      <DependentUpon>Add_Password_Form.cs</DependentUpon>
+    </Compile>
     <Compile Include="ADMINS.cs">
       <DependentUpon>CinemaModel.tt</DependentUpon>
     </Compile>
@@ -128,6 +134,9 @@
     <Compile Include="USERS.cs">
       <DependentUpon>CinemaModel.tt</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Add_Password_Form.resx">
+      <DependentUpon>Add_Password_Form.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

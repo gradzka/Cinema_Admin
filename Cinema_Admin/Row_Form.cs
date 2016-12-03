@@ -340,7 +340,14 @@ namespace Cinema_Admin
         }
         private void Row_Form_Load(object sender, EventArgs e) //blokada texboxow, uzupelnianie kontrolek
         {
-            if (insert_or_update == 1) //SQL UPDATE <=> EDYTUJ
+            if (insert_or_update == 0)
+            {
+                if (active_table == 9)
+                {
+                    password_button.Text = "DODAJ HASŁO";
+                }
+            }
+            else if (insert_or_update == 1) //SQL UPDATE <=> EDYTUJ
             {
                 for (int i = 0; i < labels.Count; i++)
                 {
@@ -795,8 +802,15 @@ namespace Cinema_Admin
         }
         private void password_button_Click(object sender, EventArgs e)
         {
-            Password_Form password_form = new Password_Form(row_to_edit, pass_textbox_user); //tabela, 1 - kliknieto EDYTUJ, wybrana krotka do edycji
-            DialogResult dialog_result = password_form.ShowDialog();  
+            if (insert_or_update == 0) {
+                Add_Password_Form add_password_form = new Add_Password_Form(row_to_edit, pass_textbox_user);
+                DialogResult dialog_result = add_password_form.ShowDialog();
+            }
+            else if (insert_or_update == 1)
+            {
+                Password_Form password_form = new Password_Form(row_to_edit, pass_textbox_user);
+                DialogResult dialog_result = password_form.ShowDialog();
+            }  
         }
     }
 }
