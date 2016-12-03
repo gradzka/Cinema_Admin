@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Security.Cryptography;
 
 namespace Cinema_Admin
 {
@@ -21,13 +22,23 @@ namespace Cinema_Admin
         {
             using (var container = new CinemaEntities())
             {
-                var number_of_admins = container.ADMINS.Where(a => a.ADMIN_LOGIN == login_textBox.Text && a.PASSWORD == password_textBox.Text);
-                if (number_of_admins.Count() == 0) return false;
-                Program_Main.login = login_textBox.Text;
-                Program_Main.password = password_textBox.Text;
+                byte[] admin_password = Encoding.Default.GetBytes(login_textBox.Text); //pobrana wartosc z pola login_textBox w byte
 
-                number_of_admins.First().LAST_LOGIN= DateTime.Now;
-                container.SaveChanges();
+                //utworzenie skrotu od pobranego hasla (SHA_1)
+                using (var sha1 = SHA1.Create())
+                {
+                    byte[] admin_password_sha1 = sha1.ComputeHash(admin_password);  //Convert the input byte to a byte array and compute the hash.
+                    string s_admin_password_sha1 = Encoding.Default.GetString(admin_password_sha1);
+
+                    var number_of_admins = container.ADMINS.Where(a => a.ADMIN_LOGIN == login_textBox.Text && a.PASSWORD == s_admin_password_sha1);
+
+                    if (number_of_admins.Count() == 0) return false;
+                    Program_Main.login = login_textBox.Text;
+                    Program_Main.password = password_textBox.Text;
+
+                    number_of_admins.First().LAST_LOGIN = DateTime.Now;
+                    container.SaveChanges();
+                }
             }
             return true;
         }

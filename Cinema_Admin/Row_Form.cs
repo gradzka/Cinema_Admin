@@ -32,7 +32,10 @@ namespace Cinema_Admin
         List<TextBox> textboxes = new List<TextBox>();
         List<ComboBox> comboboxes = new List<ComboBox>();
         List<DateTimePicker> datetimepickers = new List<DateTimePicker>();
+        Button password_button = new Button();
         CheckBox checkbox = null;
+
+        TextBox pass_textbox_user;
 
         public Row_Form(int table, int option, DataGridViewCellCollection row)
         {
@@ -203,12 +206,27 @@ namespace Cinema_Admin
                     this.Controls.Add(checkbox);
                 }
             }
-
+            if (active_table==5)
+            {
+                if (i == 1)
+                {
+                    create_password_button(textbox, i);
+                    pass_textbox_user = textbox;
+                }
+            }
             if (active_table == 8) //RES_DETAILS
             {
                 if (i == 2) //ID_TICKET
                 {
                     create_combobox_entieties(textbox, i);
+                }
+            }
+            if (active_table==9)
+            {
+                if (i == 1)
+                {
+                    create_password_button(textbox, i);
+                    pass_textbox_user = textbox;
                 }
             }
         }
@@ -247,7 +265,22 @@ namespace Cinema_Admin
             datetimepickers.Add(datetimepicker);
             this.Controls.Add(datetimepicker);
         }
-
+        public void create_password_button(TextBox textbox, int i)
+        {
+            textbox.Visible = false;
+            password_button.BackColor = System.Drawing.SystemColors.Control;
+            password_button.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            password_button.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            password_button.ForeColor = System.Drawing.SystemColors.Window;
+            password_button.Size = new System.Drawing.Size(120, 20);
+            password_button.Location = new System.Drawing.Point(141, 17 + 25 * i);
+            password_button.TextAlign = ContentAlignment.MiddleLeft;
+            password_button.TabIndex = i+12;
+            password_button.Text = "ZMIEŃ";
+            password_button.UseVisualStyleBackColor = false;
+            password_button.Click += new System.EventHandler(password_button_Click);
+            Controls.Add(password_button);        
+        }
         public void create_combobox_entieties(TextBox textbox, int i)
         {
             textbox.Visible = false;
@@ -323,6 +356,7 @@ namespace Cinema_Admin
                     {
                         textboxes[i].Enabled = false;
                     }
+                    
                     if (active_table == 8 && i == 1) //dla tabeli res_details i 1. kolumny //RES_DETAILS - > ID_RESERBATION
                     {
                         textboxes[i].Enabled = false;
@@ -632,7 +666,13 @@ namespace Cinema_Admin
 
                 if (editRow != null)
                 {
-                    editRow.PASSWORD = textboxes[1].Text;
+                    if (pass_textbox_user.Text != "")
+                    {
+                        editRow.PASSWORD = pass_textbox_user.Text;
+                    }
+                    editRow.PASSWORD = pass_textbox_user.Text;
+                    pass_textbox_user.Text = "";
+
                     editRow.NAME = textboxes[2].Text;
                     editRow.SURNAME = textboxes[3].Text;
                     editRow.E_MAIL = textboxes[4].Text;
@@ -688,7 +728,13 @@ namespace Cinema_Admin
 
                 if (editRow != null)
                 {
-                    editRow.PASSWORD = textboxes[1].Text;
+                    if (pass_textbox_user.Text != "")
+                    {
+                        editRow.PASSWORD = pass_textbox_user.Text;
+                    }
+                    editRow.PASSWORD = pass_textbox_user.Text;
+                    pass_textbox_user.Text = "";
+
                     editRow.NAME = textboxes[2].Text;
                     editRow.SURNAME = textboxes[3].Text;
                     editRow.E_MAIL = textboxes[4].Text;
@@ -743,10 +789,14 @@ namespace Cinema_Admin
             }
 
         }
-
         private void Cancel_button_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+        private void password_button_Click(object sender, EventArgs e)
+        {
+            Password_Form password_form = new Password_Form(row_to_edit, pass_textbox_user); //tabela, 1 - kliknieto EDYTUJ, wybrana krotka do edycji
+            DialogResult dialog_result = password_form.ShowDialog();  
         }
     }
 }
