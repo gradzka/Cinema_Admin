@@ -71,7 +71,7 @@
             // t_password_2
             // 
             this.t_password_2.Enabled = false;
-            this.t_password_2.Location = new System.Drawing.Point(67, 38);
+            this.t_password_2.Location = new System.Drawing.Point(67, 66);
             this.t_password_2.Name = "t_password_2";
             this.t_password_2.PasswordChar = '*';
             this.t_password_2.Size = new System.Drawing.Size(100, 22);
@@ -116,7 +116,7 @@
             // t_password_3
             // 
             this.t_password_3.Enabled = false;
-            this.t_password_3.Location = new System.Drawing.Point(67, 66);
+            this.t_password_3.Location = new System.Drawing.Point(67, 38);
             this.t_password_3.Name = "t_password_3";
             this.t_password_3.PasswordChar = '*';
             this.t_password_3.Size = new System.Drawing.Size(100, 22);

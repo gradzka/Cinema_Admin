@@ -14,18 +14,10 @@ namespace Cinema_Admin
     
     public partial class SEATS
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public SEATS()
-        {
-            this.RESERVATIONS_DETAILS = new HashSet<RESERVATIONS_DETAILS>();
-        }
-    
         public string ID_SEAT { get; set; }
         public string ID_HALL { get; set; }
         public bool VIP { get; set; }
     
         public virtual HALLS HALLS { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<RESERVATIONS_DETAILS> RESERVATIONS_DETAILS { get; set; }
     }
 }

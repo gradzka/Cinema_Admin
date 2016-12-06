@@ -19,7 +19,6 @@ namespace Cinema_Admin
         public byte ID_TICKET { get; set; }
     
         public virtual RESERVATIONS RESERVATIONS { get; set; }
-        public virtual SEATS SEATS { get; set; }
         public virtual TICKETS TICKETS { get; set; }
     }
 }

@@ -31,9 +31,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Add_Password_Form));
             this.label1 = new System.Windows.Forms.Label();
             this.g_b_new_pass = new System.Windows.Forms.GroupBox();
-            this.b_confirm_2 = new System.Windows.Forms.Button();
             this.t_password_2 = new System.Windows.Forms.TextBox();
             this.t_password_3 = new System.Windows.Forms.TextBox();
+            this.b_confirm_2 = new System.Windows.Forms.Button();
             this.g_b_new_pass.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,9 +50,9 @@
             // 
             // g_b_new_pass
             // 
-            this.g_b_new_pass.Controls.Add(this.b_confirm_2);
             this.g_b_new_pass.Controls.Add(this.t_password_2);
             this.g_b_new_pass.Controls.Add(this.t_password_3);
+            this.g_b_new_pass.Controls.Add(this.b_confirm_2);
             this.g_b_new_pass.Font = new System.Drawing.Font("Consolas", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.g_b_new_pass.ForeColor = System.Drawing.SystemColors.Control;
             this.g_b_new_pass.Location = new System.Drawing.Point(9, 41);
@@ -61,6 +61,22 @@
             this.g_b_new_pass.TabIndex = 4;
             this.g_b_new_pass.TabStop = false;
             this.g_b_new_pass.Text = "WPROWADŹ NOWE HASŁO DWUKROTNIE";
+            // 
+            // t_password_2
+            // 
+            this.t_password_2.Location = new System.Drawing.Point(67, 66);
+            this.t_password_2.Name = "t_password_2";
+            this.t_password_2.PasswordChar = '*';
+            this.t_password_2.Size = new System.Drawing.Size(100, 22);
+            this.t_password_2.TabIndex = 3;
+            // 
+            // t_password_3
+            // 
+            this.t_password_3.Location = new System.Drawing.Point(67, 38);
+            this.t_password_3.Name = "t_password_3";
+            this.t_password_3.PasswordChar = '*';
+            this.t_password_3.Size = new System.Drawing.Size(100, 22);
+            this.t_password_3.TabIndex = 0;
             // 
             // b_confirm_2
             // 
@@ -75,22 +91,6 @@
             this.b_confirm_2.Text = "ZATWIERDŹ";
             this.b_confirm_2.UseVisualStyleBackColor = false;
             this.b_confirm_2.Click += new System.EventHandler(this.b_confirm_2_Click);
-            // 
-            // t_password_2
-            // 
-            this.t_password_2.Location = new System.Drawing.Point(67, 38);
-            this.t_password_2.Name = "t_password_2";
-            this.t_password_2.PasswordChar = '*';
-            this.t_password_2.Size = new System.Drawing.Size(100, 22);
-            this.t_password_2.TabIndex = 3;
-            // 
-            // t_password_3
-            // 
-            this.t_password_3.Location = new System.Drawing.Point(67, 66);
-            this.t_password_3.Name = "t_password_3";
-            this.t_password_3.PasswordChar = '*';
-            this.t_password_3.Size = new System.Drawing.Size(100, 22);
-            this.t_password_3.TabIndex = 0;
             // 
             // Add_Password_Form
             // 

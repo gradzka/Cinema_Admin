@@ -120,11 +120,11 @@
             this.TableGridView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.TableGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.TableGridView.Cursor = System.Windows.Forms.Cursors.Default;
-            this.TableGridView.Location = new System.Drawing.Point(199, 12);
+            this.TableGridView.Location = new System.Drawing.Point(194, 12);
             this.TableGridView.MultiSelect = false;
             this.TableGridView.Name = "TableGridView";
             this.TableGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.TableGridView.Size = new System.Drawing.Size(500, 276);
+            this.TableGridView.Size = new System.Drawing.Size(505, 276);
             this.TableGridView.TabIndex = 16;
             // 
             // b_logout

@@ -25,6 +25,7 @@ namespace Cinema_Admin
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<ADMINS> ADMINS { get; set; }
         public virtual DbSet<HALLS> HALLS { get; set; }
         public virtual DbSet<MOVIES> MOVIES { get; set; }
         public virtual DbSet<PROGRAM> PROGRAM { get; set; }
@@ -34,6 +35,5 @@ namespace Cinema_Admin
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<TICKETS> TICKETS { get; set; }
         public virtual DbSet<USERS> USERS { get; set; }
-        public virtual DbSet<ADMINS> ADMINS { get; set; }
     }
 }

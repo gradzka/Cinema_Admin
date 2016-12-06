@@ -74,6 +74,7 @@
         <EntityType Name="SEATS">
           <Key>
             <PropertyRef Name="ID_SEAT" />
+            <PropertyRef Name="ID_HALL" />
           </Key>
           <Property Name="ID_SEAT" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="ID_HALL" Type="varchar" MaxLength="4" Nullable="false" />
@@ -164,20 +165,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RESERVATIONS_SEATS">
-          <End Role="SEATS" Type="Self.SEATS" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="RESERVATIONS_DETAILS" Type="Self.RESERVATIONS_DETAILS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SEATS">
-              <PropertyRef Name="ID_SEAT" />
-            </Principal>
-            <Dependent Role="RESERVATIONS_DETAILS">
-              <PropertyRef Name="ID_SEAT" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_RESERVATIONS_TICKETS">
           <End Role="TICKETS" Type="Self.TICKETS" Multiplicity="1" />
           <End Role="RESERVATIONS_DETAILS" Type="Self.RESERVATIONS_DETAILS" Multiplicity="*" />
@@ -243,10 +230,6 @@
             <End Role="PROGRAM" EntitySet="PROGRAM" />
             <End Role="RESERVATIONS" EntitySet="RESERVATIONS" />
           </AssociationSet>
-          <AssociationSet Name="FK_RESERVATIONS_SEATS" Association="Self.FK_RESERVATIONS_SEATS">
-            <End Role="SEATS" EntitySet="SEATS" />
-            <End Role="RESERVATIONS_DETAILS" EntitySet="RESERVATIONS_DETAILS" />
-          </AssociationSet>
           <AssociationSet Name="FK_RESERVATIONS_TICKETS" Association="Self.FK_RESERVATIONS_TICKETS">
             <End Role="TICKETS" EntitySet="TICKETS" />
             <End Role="RESERVATIONS_DETAILS" EntitySet="RESERVATIONS_DETAILS" />
@@ -264,6 +247,19 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="CinemaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="ADMINS">
+          <Key>
+            <PropertyRef Name="ADMIN_LOGIN" />
+          </Key>
+          <Property Name="ADMIN_LOGIN" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="PASSWORD" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="SURNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="E_MAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="TELEPHONE" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
+          <Property Name="LAST_LOGIN" Type="DateTime" Precision="3" />
+          <Property Name="LAST_LOGOUT" Type="DateTime" Precision="3" />
+        </EntityType>
         <EntityType Name="HALLS">
           <Key>
             <PropertyRef Name="ID_HALL" />
@@ -326,18 +322,17 @@
           <Property Name="ID_SEAT" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ID_TICKET" Type="Byte" Nullable="false" />
           <NavigationProperty Name="RESERVATIONS" Relationship="Self.FK_RESERVATIONS_DETAILS_RESERVATIONS" FromRole="RESERVATIONS_DETAILS" ToRole="RESERVATIONS" />
-          <NavigationProperty Name="SEATS" Relationship="Self.FK_RESERVATIONS_SEATS" FromRole="RESERVATIONS_DETAILS" ToRole="SEATS" />
           <NavigationProperty Name="TICKETS" Relationship="Self.FK_RESERVATIONS_TICKETS" FromRole="RESERVATIONS_DETAILS" ToRole="TICKETS" />
         </EntityType>
         <EntityType Name="SEATS">
           <Key>
             <PropertyRef Name="ID_SEAT" />
+            <PropertyRef Name="ID_HALL" />
           </Key>
           <Property Name="ID_SEAT" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ID_HALL" Type="String" MaxLength="4" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="VIP" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="HALLS" Relationship="Self.FK_SEAT_HALLS" FromRole="SEATS" ToRole="HALLS" />
-          <NavigationProperty Name="RESERVATIONS_DETAILS" Relationship="Self.FK_RESERVATIONS_SEATS" FromRole="SEATS" ToRole="RESERVATIONS_DETAILS" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -369,8 +364,8 @@
           <Property Name="SURNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="E_MAIL" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="TELEPHONE" Type="String" MaxLength="10" FixedLength="true" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="RESERVATIONS" Relationship="Self.FK_RESERVATIONS_USERS" FromRole="USERS" ToRole="RESERVATIONS" />
           <Property Name="LAST_LOGIN" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="RESERVATIONS" Relationship="Self.FK_RESERVATIONS_USERS" FromRole="USERS" ToRole="RESERVATIONS" />
         </EntityType>
         <Association Name="FK_PROGRAM_HALLS">
           <End Role="HALLS" Type="Self.HALLS" Multiplicity="1" />
@@ -452,20 +447,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_RESERVATIONS_SEATS">
-          <End Role="SEATS" Type="Self.SEATS" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="RESERVATIONS_DETAILS" Type="Self.RESERVATIONS_DETAILS" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SEATS">
-              <PropertyRef Name="ID_SEAT" />
-            </Principal>
-            <Dependent Role="RESERVATIONS_DETAILS">
-              <PropertyRef Name="ID_SEAT" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_RESERVATIONS_TICKETS">
           <End Role="TICKETS" Type="Self.TICKETS" Multiplicity="1" />
           <End Role="RESERVATIONS_DETAILS" Type="Self.RESERVATIONS_DETAILS" Multiplicity="*" />
@@ -479,6 +460,7 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="CinemaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ADMINS" EntityType="Self.ADMINS" />
           <EntitySet Name="HALLS" EntityType="Self.HALLS" />
           <EntitySet Name="MOVIES" EntityType="Self.MOVIES" />
           <EntitySet Name="PROGRAM" EntityType="Self.PROGRAM" />
@@ -512,35 +494,31 @@
             <End Role="USERS" EntitySet="USERS" />
             <End Role="RESERVATIONS" EntitySet="RESERVATIONS" />
           </AssociationSet>
-          <AssociationSet Name="FK_RESERVATIONS_SEATS" Association="Self.FK_RESERVATIONS_SEATS">
-            <End Role="SEATS" EntitySet="SEATS" />
-            <End Role="RESERVATIONS_DETAILS" EntitySet="RESERVATIONS_DETAILS" />
-          </AssociationSet>
           <AssociationSet Name="FK_RESERVATIONS_TICKETS" Association="Self.FK_RESERVATIONS_TICKETS">
             <End Role="TICKETS" EntitySet="TICKETS" />
             <End Role="RESERVATIONS_DETAILS" EntitySet="RESERVATIONS_DETAILS" />
           </AssociationSet>
-          <EntitySet Name="ADMINS" EntityType="CinemaModel.ADMINS" />
         </EntityContainer>
-        <EntityType Name="ADMINS">
-          <Key>
-            <PropertyRef Name="ADMIN_LOGIN" />
-          </Key>
-          <Property Name="ADMIN_LOGIN" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PASSWORD" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="NAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="SURNAME" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="E_MAIL" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TELEPHONE" Type="String" Nullable="false" MaxLength="10" FixedLength="true" Unicode="false" />
-          <Property Name="LAST_LOGIN" Type="DateTime" Precision="3" />
-          <Property Name="LAST_LOGOUT" Type="DateTime" Precision="3" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="CinemaModelStoreContainer" CdmEntityContainer="CinemaEntities">
+          <EntitySetMapping Name="ADMINS">
+            <EntityTypeMapping TypeName="CinemaModel.ADMINS">
+              <MappingFragment StoreEntitySet="ADMINS">
+                <ScalarProperty Name="ADMIN_LOGIN" ColumnName="ADMIN_LOGIN" />
+                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="SURNAME" ColumnName="SURNAME" />
+                <ScalarProperty Name="E_MAIL" ColumnName="E-MAIL" />
+                <ScalarProperty Name="TELEPHONE" ColumnName="TELEPHONE" />
+                <ScalarProperty Name="LAST_LOGIN" ColumnName="LAST_LOGIN" />
+                <ScalarProperty Name="LAST_LOGOUT" ColumnName="LAST_LOGOUT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="HALLS">
             <EntityTypeMapping TypeName="CinemaModel.HALLS">
               <MappingFragment StoreEntitySet="HALLS">
@@ -631,27 +609,13 @@
           <EntitySetMapping Name="USERS">
             <EntityTypeMapping TypeName="CinemaModel.USERS">
               <MappingFragment StoreEntitySet="USERS">
-                <ScalarProperty Name="LAST_LOGIN" ColumnName="LAST_LOGIN" />
                 <ScalarProperty Name="USER_LOGIN" ColumnName="USER_LOGIN" />
                 <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
                 <ScalarProperty Name="NAME" ColumnName="NAME" />
                 <ScalarProperty Name="SURNAME" ColumnName="SURNAME" />
                 <ScalarProperty Name="E_MAIL" ColumnName="E-MAIL" />
                 <ScalarProperty Name="TELEPHONE" ColumnName="TELEPHONE" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="ADMINS">
-            <EntityTypeMapping TypeName="CinemaModel.ADMINS">
-              <MappingFragment StoreEntitySet="ADMINS">
-                <ScalarProperty Name="LAST_LOGOUT" ColumnName="LAST_LOGOUT" />
                 <ScalarProperty Name="LAST_LOGIN" ColumnName="LAST_LOGIN" />
-                <ScalarProperty Name="TELEPHONE" ColumnName="TELEPHONE" />
-                <ScalarProperty Name="E_MAIL" ColumnName="E-MAIL" />
-                <ScalarProperty Name="SURNAME" ColumnName="SURNAME" />
-                <ScalarProperty Name="NAME" ColumnName="NAME" />
-                <ScalarProperty Name="PASSWORD" ColumnName="PASSWORD" />
-                <ScalarProperty Name="ADMIN_LOGIN" ColumnName="ADMIN_LOGIN" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
