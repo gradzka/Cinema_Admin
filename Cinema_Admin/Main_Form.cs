@@ -189,7 +189,6 @@ namespace Cinema_Admin
                                     select new
                                     {
                                         user.USER_LOGIN,
-                                        user.PASSWORD,
                                         user.NAME,
                                         user.SURNAME,
                                         user.E_MAIL,
@@ -253,7 +252,6 @@ namespace Cinema_Admin
                                          select new
                                          {
                                              admin.ADMIN_LOGIN,
-                                             admin.PASSWORD,
                                              admin.NAME,
                                              admin.SURNAME,
                                              admin.E_MAIL,

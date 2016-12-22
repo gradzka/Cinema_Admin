@@ -22,19 +22,19 @@ namespace Cinema_Admin
         {
             using (var container = new CinemaEntities())
             {
-                byte[] admin_password = Encoding.Default.GetBytes(password_textBox.Text); //pobrana wartosc z pola login_textBox w byte
+                byte[] admin_password = Encoding.Default.GetBytes(password_textBox.Text);
 
                 //utworzenie skrotu od pobranego hasla (SHA_1)
                 using (var sha1 = SHA1.Create())
                 {
-                    byte[] admin_password_sha1 = sha1.ComputeHash(admin_password);  //Convert the input byte to a byte array and compute the hash.
+                    byte[] admin_password_sha1 = sha1.ComputeHash(admin_password);
                     string s_admin_password_sha1 = Encoding.Default.GetString(admin_password_sha1);
 
                     var number_of_admins = container.ADMINS.Where(a => a.ADMIN_LOGIN == login_textBox.Text && a.PASSWORD == s_admin_password_sha1);
 
                     if (number_of_admins.Count() == 0) return false;
                     Program_Main.login = login_textBox.Text;
-                    Program_Main.password = password_textBox.Text;
+                    Program_Main.password = s_admin_password_sha1;
 
                     number_of_admins.First().LAST_LOGIN = DateTime.Now;
                     container.SaveChanges();
