@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Entity.Infrastructure;
+using System.Runtime.InteropServices;
 
 namespace Cinema_Admin
 {
@@ -449,7 +450,7 @@ namespace Cinema_Admin
             }
             return true;
         }
-        bool check_if_date_available()
+        bool check_if_date_available([Optional]DateTime date_a, [Optional]TimeSpan time_a)
         {
             TimeSpan time_to_prepare_hall = new TimeSpan(0, 10, 0);
             TimeSpan twenty_four_hours = new TimeSpan(24, 0, 0);
@@ -484,6 +485,7 @@ namespace Cinema_Admin
                         {
                             if (TIME<= item.TIME +(item.RUNTIME+ time_to_prepare_hall) && item.TIME <= TIME + (runtime+ time_to_prepare_hall))
                             {
+                                if (item.DATE != date_a && item.TIME != time_a)
                                 return false;
                             }
                         }
@@ -640,7 +642,7 @@ namespace Cinema_Admin
                     editRow.C2D_3D = comboboxes[2].Text;
                     editRow.VERSION = comboboxes[3].Text;
 
-                    if (check_if_date_available() == false)
+                    if (check_if_date_available(datetimepickers[0].Value, TimeSpan.Parse(datetimepickers[1].Text)) == false)
                     {
                         MessageBox.Show("Podany termin jest zajęty!", "Error#10");
                         return false;
